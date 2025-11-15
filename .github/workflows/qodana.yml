@@ -1,0 +1,175 @@
+﻿﻿# Qodana continuous inspection workflow for Alkeari Labs LLC
+# Docs: https://www.jetbrains.com/help/qodana/github.html
+# This workflow assumed a secret named QODANA_TOKEN has been added to the repository settings.
+# It used native mode (withinDocker: false) as configured in qodana.yaml.
+
+name: Qodana
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 3 * * 1'  # Weekly scan (Monday 03:00 UTC)
+
+jobs:
+  qodana:
+    name: Qodana Code Quality Scan
+    runs-on: ubuntu-latest
+    concurrency:
+      group: qodana-${{ github.ref }}
+      cancel-in-progress: true
+    permissions:
+      contents: write          # upgraded to write for committing results
+      security-events: write
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore solution dependencies
+        run: |
+          dotnet restore "Alkeari Labs LLC.sln"
+
+      - name: Qodana Scan
+        uses: JetBrains/qodana-action@v2025.2.1
+        with:
+          use-native: true
+          cache-default-branch-only: true
+          args: |
+            --apply-defaults
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+
+      - name: Upload SARIF to GitHub Code Scanning
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: qodana.sarif.json
+
+      - name: Archive Qodana report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qodana-report
+          path: .qodana/report
+          retention-days: 14
+
+      - name: Persist Qodana SARIF and summary to repo
+        if: success() && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p Qodana/Latest
+          cp qodana.sarif.json Qodana/Latest/ || echo "No SARIF found"
+          
+          # Generate condensed summary using Python
+          python3 - <<'PYSCRIPT'
+import json
+import pathlib
+from collections import Counter
+
+try:
+    with open('qodana.sarif.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    inspection_counts = Counter()
+    severity_counts = Counter()
+    file_counts = Counter()
+    
+    for run in data.get('runs', []):
+        for result in run.get('results', []):
+            rule_id = result.get('ruleId', 'UNKNOWN')
+            inspection_counts[rule_id] += 1
+            
+            level = result.get('level', 'note')
+            severity_counts[level] += 1
+            
+            locations = result.get('locations', [])
+            if locations:
+                uri = locations[0].get('physicalLocation', {}).get('artifactLocation', {}).get('uri', '')
+                if uri:
+                    file_counts[uri] += 1
+    
+    lines = [
+        "# Qodana Latest Scan Summary",
+        "",
+        f"Generated: {data.get('runs', [{}])[0].get('invocations', [{}])[0].get('startTimeUtc', 'N/A') if data.get('runs') else 'N/A'}",
+        "",
+        "## Overview",
+        "",
+        f"- **Total Issues**: {sum(inspection_counts.values())}",
+        f"- **Unique Inspections**: {len(inspection_counts)}",
+        f"- **Files Affected**: {len(file_counts)}",
+        "",
+        "## Severity Distribution",
+        "",
+        "| Severity | Count |",
+        "|----------|-------|",
+    ]
+    
+    for severity in ['error', 'warning', 'note', 'none']:
+        count = severity_counts.get(severity, 0)
+        if count > 0:
+            lines.append(f"| {severity.title()} | {count} |")
+    
+    lines.extend([
+        "",
+        "## Top 30 Inspection Types",
+        "",
+        "| Inspection ID | Count |",
+        "|---------------|-------|",
+    ])
+    
+    for rule_id, count in inspection_counts.most_common(30):
+        lines.append(f"| `{rule_id}` | {count} |")
+    
+    lines.extend([
+        "",
+        "## Top 20 Files with Most Issues",
+        "",
+        "| File | Issues |",
+        "|------|--------|",
+    ])
+    
+    for file_path, count in file_counts.most_common(20):
+        lines.append(f"| `{file_path}` | {count} |")
+    
+    lines.extend([
+        "",
+        "---",
+        "",
+        "*This summary is auto-generated from `qodana.sarif.json`.*",
+    ])
+    
+    summary_path = pathlib.Path('Qodana/Latest/Summary.md')
+    summary_path.write_text('\n'.join(lines), encoding='utf-8')
+    print(f"Summary written to {summary_path}")
+    
+except Exception as e:
+    print(f"Error generating summary: {e}")
+    pathlib.Path('Qodana/Latest/Summary.md').write_text(
+        f"# Qodana Summary\n\nError generating summary: {e}\n",
+        encoding='utf-8'
+    )
+PYSCRIPT
+          
+          # Commit and push results
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Qodana/Latest/
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore(qodana): update latest SARIF and summary [skip ci]"
+            git push
+          fi

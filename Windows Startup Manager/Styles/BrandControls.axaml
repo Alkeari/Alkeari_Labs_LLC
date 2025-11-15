@@ -1,0 +1,78 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Styles.Resources>
+        <!-- Typography -->
+        <FontFamily x:Key="App.Font">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
+    </Styles.Resources>
+
+    <Style Selector="Window">
+        <Setter Property="Background" Value="{DynamicResource Surface.Background}" />
+        <Setter Property="Foreground" Value="{DynamicResource Text.Primary}" />
+        <Setter Property="FontFamily" Value="{DynamicResource App.Font}" />
+    </Style>
+
+    <Style Selector="Button">
+        <Setter Property="Background" Value="{DynamicResource Accent.Primary}" />
+        <Setter Property="Foreground" Value="{DynamicResource Text.Invert}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent.Primary}" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="12,8" />
+    </Style>
+
+    <Style Selector="Button:pointerover">
+        <Setter Property="Background" Value="{DynamicResource Accent.Primary.Hover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent.Primary.Hover}" />
+    </Style>
+
+    <Style Selector="Button:pressed">
+        <Setter Property="Background" Value="{DynamicResource Accent.Primary.Pressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent.Primary.Pressed}" />
+    </Style>
+
+    <!-- Secondary button using Brown accent -->
+    <Style Selector="Button.secondary">
+        <Setter Property="Background" Value="{DynamicResource Accent.Secondary}" />
+        <Setter Property="Foreground" Value="{DynamicResource Text.Invert}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent.Secondary}" />
+    </Style>
+
+    <!-- Danger button using red color -->
+    <Style Selector="Button.danger">
+        <Setter Property="Background" Value="#FFB22222" />
+        <Setter Property="Foreground" Value="{DynamicResource Text.Invert}" />
+        <Setter Property="BorderBrush" Value="#FFB22222" />
+    </Style>
+
+    <!-- Outline button using Silver -->
+    <Style Selector="Button.outline">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Text.Primary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Stroke.Neutral}" />
+    </Style>
+
+    <Style Selector="TextBox">
+        <Setter Property="Background" Value="{DynamicResource Input.Background}" />
+        <Setter Property="Foreground" Value="{DynamicResource Text.Primary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Input.Border}" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="10,6" />
+    </Style>
+
+    <Style Selector="TextBox:focus">
+        <Setter Property="BorderBrush" Value="{DynamicResource Input.Focus}" />
+    </Style>
+
+    <Style Selector="DataGrid">
+        <Setter Property="GridLinesVisibility" Value="None" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Stroke.Muted}" />
+        <Setter Property="RowBackground" Value="Transparent" />
+        <Setter Property="Background" Value="#08000000" />
+    </Style>
+
+    <Style Selector="Separator">
+        <Setter Property="Background" Value="{DynamicResource Stroke.Muted}" />
+    </Style>
+
+    <Style Selector="CheckBox">
+        <Setter Property="Foreground" Value="{DynamicResource Text.Primary}" />
+    </Style>
+</Styles>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="UserContentModel">
+    <attachedFolders />
+    <explicitIncludes>
+      <Path>.AI Assistant</Path>
+      <Path>.git</Path>
+      <Path>.gitignore</Path>
+      <Path>.idea</Path>
+      <Path>Alkeari Labs LLC.ddargs.json</Path>
+      <Path>Alkeari Labs LLC.sln.DotSettings.user</Path>
+      <Path>Problematic Archives</Path>
+      <Path>README.md</Path>
+      <Path>Scripts</Path>
+      <Path>Windows Startup Manager/bin</Path>
+      <Path>global.json</Path>
+    </explicitIncludes>
+    <explicitExcludes />
+  </component>
+</project>

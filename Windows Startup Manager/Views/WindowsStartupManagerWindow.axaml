@@ -1,0 +1,91 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="https://github.com/avaloniaui"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:Windows_Startup_Manager.ViewModels"
+        mc:Ignorable="d"
+        x:Class="Windows_Startup_Manager.Views.WindowsStartupManagerWindow"
+        x:CompileBindings="False"
+        Width="1000" Height="680"
+        MinWidth="860" MinHeight="560"
+        Title="Windows Startup Manager"
+        Background="{DynamicResource Surface.Background}"
+        Foreground="{DynamicResource Text.Primary}"
+        FontFamily="{DynamicResource App.Font}"
+        Icon="/Assets/Icon/icon.ico">
+
+    <Window.DataContext>
+        <viewModels:WindowsStartupManagerViewModel />
+    </Window.DataContext>
+
+    <DockPanel Margin="20">
+        <!-- Header -->
+        <StackPanel DockPanel.Dock="Top" Spacing="12">
+            <TextBlock Text="Windows Startup Manager"
+                       FontSize="22"
+                       FontWeight="SemiBold" />
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBox Width="360"
+                         Watermark="Search apps"
+                         Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip.Tip="Type to filter by name or publisher" />
+                <Button Content="Enable Selected"
+                        Command="{Binding SetSelectedStatusCommand}"
+                        CommandParameter="True" />
+                <Button Classes="secondary"
+                        Content="Disable Selected"
+                        Command="{Binding SetSelectedStatusCommand}"
+                        CommandParameter="False" />
+                <Button Classes="danger"
+                        Content="Delete Selected"
+                        Command="{Binding DeleteSelectedCommand}" />
+                <Button Classes="outline"
+                        Content="Open Location"
+                        Command="{Binding OpenLocationsCommand}" />
+            </StackPanel>
+            <Separator />
+        </StackPanel>
+
+        <!-- Body -->
+        <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,Auto">
+            <!-- Summary strip -->
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Spacing="16" Margin="0,0,0,10">
+                <TextBlock Text="{Binding SummaryText}" />
+            </StackPanel>
+
+            <!-- Data grid -->
+            <DataGrid Grid.Row="1" Grid.Column="0"
+                      ItemsSource="{Binding FilteredItems}"
+                      SelectedItems="{Binding SelectedItems}"
+                      CanUserReorderColumns="True"
+                      CanUserResizeColumns="True"
+                      IsReadOnly="True"
+                      HeadersVisibility="All"
+                      GridLinesVisibility="None"
+                      SelectionMode="Extended"
+                      Margin="0,0,10,0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="2*" />
+                    <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="2*" />
+                    <DataGridTextColumn Header="Status" Binding="{Binding IsEnabled}" Width="*" />
+                    <DataGridTextColumn Header="Type" Binding="{Binding LocationType}" Width="*" />
+                    <DataGridTextColumn Header="Path" Binding="{Binding Path}" Width="3*" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Right rail actions -->
+            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="10" Width="220">
+                <TextBlock Text="Quick actions" FontWeight="SemiBold" Margin="0,0,0,4" />
+                <Button Content="Refresh" Command="{Binding RefreshCommand}" />
+                <Button Content="Add New Entry" Command="{Binding AddNewCommand}" />
+                <Button Content="Create Backup" Classes="outline" Command="{Binding BackupCommand}" />
+                <Button Content="Restore Backup" Classes="secondary" Command="{Binding RestoreCommand}" />
+                <Separator />
+                <TextBlock Text="Filters" FontWeight="SemiBold" Margin="0,6,0,4" />
+                <CheckBox Content="Enabled only" IsChecked="{Binding FilterEnabled}" />
+                <CheckBox Content="Disabled only" IsChecked="{Binding FilterDisabled}" />
+                <CheckBox Content="System entries" IsChecked="{Binding ShowSystemEntries}" />
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>

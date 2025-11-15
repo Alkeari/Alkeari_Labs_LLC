@@ -1,0 +1,101 @@
+﻿#-------------------------------------------------------------------------------#
+#               Qodana analysis is configured by qodana.yaml file               #
+#             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
+#-------------------------------------------------------------------------------#
+#################################################################################
+#              WARNING: Do not store sensitive information in this file,        #
+#               as its contents will be included in the Qodana report.          #
+#################################################################################
+# Qodana configuration for Alkeari Labs LLC (.NET / Avalonia project)
+# Do not store secrets here.
+version: "1.0"
+
+# Native mode (.NET)
+linter: qodana-dotnet
+withinDocker: false
+
+# Inspection profile (recommended baseline)
+profile:
+  name: qodana.recommended
+
+# Additional inspections explicitly included (beyond profile)
+include:
+  - name: VulnerableLibrariesLocal           # Vulnerability checker
+  - name: IncorrectFormatting                # Consolidated formatting issues
+  - name: HeapView.ObjectAllocation          # Allocation hotspots
+  - name: HeapView.ObjectAllocation.Evident  # Evident allocations
+  - name: HeapView.ObjectAllocation.Possible # Potential allocations
+  - name: UnusedMember.Global                # Dead public members
+  - name: MemberCanBePrivate.Global          # Tighten visibility
+  - name: MemberCanBeMadeStatic.Global       # Static candidate (public)
+  - name: MemberCanBeMadeStatic.Local        # Static candidate (local)
+  - name: PropertyCanBeMadeInitOnly.Global   # Promote init-only usage
+  - name: ArrangeRedundantParentheses        # Parentheses cleanup
+  - name: ReplaceSubstringWithRangeIndexer   # C# range syntax opportunities
+  - name: ConvertIfStatementToReturnStatement
+  - name: InvertIf
+  - name: LoopCanBeConvertedToQuery
+  - name: ClassNeverInstantiated.Global
+  - name: ClassWithVirtualMembersNeverInherited.Global
+  - name: UnusedMethodReturnValue.Global
+  - name: CA1822                              # Mark members static when possible
+
+# Exclusions (skip generated/build artifacts & large static asset folders)
+exclude:
+  - name: All
+    paths:
+      - Windows Startup Manager/bin
+      - Windows Startup Manager/obj
+      - Windows Startup Manager/Assets/Fonts
+      - Windows Startup Manager/Assets/Graphics
+      - Windows Startup Manager/Setup
+      - Scripts/Problematic Archives
+
+# Quality gates (fail build if thresholds exceeded)
+failureConditions:
+  severityThresholds:
+    any: 300        # Total problems cap
+    critical: 0     # No critical issues allowed
+    high: 25        # High severity limit
+    moderate: 120   # Moderate severity limit
+    low: 200        # Low severity limit
+    info: 400       # Informational findings cap
+
+# Optional overall fail threshold (sum of new + absent when baseline used)
+failThreshold: 0   # Enforce zero newly introduced issues (strict baseline mode)
+
+# Disable sanity inspections if needed (left enabled for now)
+# disableSanityInspections: true
+
+# License audit adjustments (uncomment to customize)
+# exclude:
+#   - name: CheckDependencyLicenses
+
+# Dependency ignores / overrides (examples; keep empty until needed)
+# dependencyIgnores:
+#   - name: "internal-placeholder"
+# licenseRules:
+#   - keys: [ "MIT" ]
+#     prohibited: [ "GPL-3.0" ]
+# dependencyOverrides:
+#   - name: "example"
+#     version: "1.0.0"
+#     url: "https://example.com"
+#     licenses:
+#       - key: "Apache-2.0"
+#         url: "https://example.com/license"
+# customDependencies:
+#   - name: "InternalTool"
+#     version: "2025.1"
+#     licenses:
+#       - key: "PROPRIETARY-LICENSE"
+
+# Quick-Fix strategy (report-only by default)
+# fixesStrategy: cleanup
+
+# Scenario override (default run retained)
+# script:
+#   name: default
+
+# Bootstrap hook (prepare environment; uncomment if needed)
+# bootstrap: pwsh -File ./prepare-qodana.ps1

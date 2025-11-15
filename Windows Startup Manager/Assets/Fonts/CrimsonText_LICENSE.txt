@@ -1,0 +1,7 @@
+﻿Crimson Text Font License
+=========================
+
+Crimson Text is licensed under the SIL Open Font License, Version 1.1.
+License: https://scripts.sil.org/OFL
+Copyright (c) 2010-2024 Sebastian Kosch.
+

@@ -1,0 +1,44 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Base color tokens -->
+    <Color x:Key="Brand.Primary.Color">#FF000000</Color>
+    <Color x:Key="Brand.Accent1.Color">#FFDAA520</Color>
+    <Color x:Key="Brand.Accent2.Color">#FF8B4513</Color>
+    <Color x:Key="Brand.Neutral1.Color">#FFC0C0C0</Color>
+    <Color x:Key="Brand.Neutral2.Color">#FFF5F5F5</Color>
+
+    <!-- Derived color tokens for control state usage -->
+    <Color x:Key="Input.Border.Color">#FFC0C0C0</Color>
+    <Color x:Key="Input.Focus.Color">#FFDAA520</Color>
+    <Color x:Key="Selection.Border.Color">#FFDAA520</Color>
+
+    <!-- Surfaces (brushes) -->
+    <SolidColorBrush x:Key="Surface.Background" Color="{StaticResource Brand.Primary.Color}" />
+    <SolidColorBrush x:Key="Surface.Card" Color="#FF111111" />
+    <SolidColorBrush x:Key="Surface.Header" Color="#FF0B0B0B" />
+
+    <!-- Content (brushes) -->
+    <SolidColorBrush x:Key="Text.Primary" Color="{StaticResource Brand.Neutral2.Color}" />
+    <SolidColorBrush x:Key="Text.Secondary" Color="#FFCCCCCC" />
+    <SolidColorBrush x:Key="Text.Muted" Color="#FF9C9C9C" />
+    <SolidColorBrush x:Key="Text.Invert" Color="{StaticResource Brand.Primary.Color}" />
+
+    <!-- Accents and states (brushes) -->
+    <SolidColorBrush x:Key="Accent.Primary" Color="{StaticResource Brand.Accent1.Color}" />
+    <SolidColorBrush x:Key="Accent.Primary.Hover" Color="#FFE2B64A" />
+    <SolidColorBrush x:Key="Accent.Primary.Pressed" Color="#FFC29412" />
+    <SolidColorBrush x:Key="Accent.Secondary" Color="{StaticResource Brand.Accent2.Color}" />
+
+    <!-- Structure (brushes) -->
+    <SolidColorBrush x:Key="Stroke.Neutral" Color="{StaticResource Brand.Neutral1.Color}" />
+    <SolidColorBrush x:Key="Stroke.Muted" Color="#FF5A5A5A" />
+
+    <!-- Controls (brushes) -->
+    <SolidColorBrush x:Key="Input.Background" Color="#FF0E0E0E" />
+    <SolidColorBrush x:Key="Input.Border" Color="{StaticResource Input.Border.Color}" />
+    <SolidColorBrush x:Key="Input.Focus" Color="{StaticResource Input.Focus.Color}" />
+
+    <SolidColorBrush x:Key="Selection.Background" Color="#33DAA520" />
+    <SolidColorBrush x:Key="Selection.Border" Color="{StaticResource Selection.Border.Color}" />
+</ResourceDictionary>
